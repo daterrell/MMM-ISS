@@ -1,0 +1,26 @@
+{
+  "name": "Magic-Mirror-Module-ISS",
+  "version": "1.0",
+  "description": "This module for the Magic Mirror allows you to see when the International Space Station (Satellite 25544 (ZARYA)) is visible overhead.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daterrell/MMM-ISS"
+  },
+  "keywords": [
+    "magic mirror",
+    "smart mirror",
+    "module",
+    "ISS",
+    "Space Station"
+  ],
+  "author": "Dave Terrell",
+  "contributors": "git+https://github.com/daterrell/MMM-ISS/graphs/contributors",
+  "license": "MIT",
+  "bugs": {
+    "url": "git+https://github.com/daterrell/MMM-ISS/issues"
+  },
+  "homepage": "git+https://github.com/daterrell/MMM-ISS#readme",
+  "dependencies": {
+    "rss-parser": "latest"
+  }
+}
