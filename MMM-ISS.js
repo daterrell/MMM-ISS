@@ -1,40 +1,111 @@
-const Parser = require('rss-parser');
-let parser = new Parser();
+Module.register("MMM-ISS", {
+  sightings: {},
+  error: false,
 
-(async() => {
-  let feed = await parser.parseURL('https://spotthestation.nasa.gov/sightings/xml_files/United_States_California_Irvine.xml');
+  defaults: {
+    /**
+     * The country, region and city must come from supported listings on spotthestation.nasa.gov
+     */
+    minElevation: '40',
+    country: 'United States',
+    region: 'California',
+    city: 'Irvine',
+    header: 'ISS Sightings',
+    useHeader: false
+  },
 
-  let offset = new Date().getTimezoneOffset();
-  let plusMinus = offset >= 0 ? '-' : '+';
-  let stringOffset = "GMT" + plusMinus + ("0000" + (offset / 60 * 100)).substr(-4,4);
-  let now = new Date();
+  getHeader: function () {
+    return this.config.useHeader && this.config.header;
+  },
 
-  let sightings = 
-    feed.items
-      // Turn items' content from strings into JS object
-      .map(item => {
-        return item
-          .content
-          .split("<br/>")
-          .filter(e => e.trim())
-          .reduce((rv, el) => {
-            let e = el.split(/:(.+)/); // Split string at first colon
-            rv[e[0].trim().replace(" ", "_")] = e[1].trim();
-            return rv;
-          }, {});
-      })
-      // Remove Date and Time properties, replace with proper DateTime object
-      .map(sighting => {
-        let newDateTime = new Date([sighting.Date, sighting.Time, stringOffset].join(' '));
-        delete sighting.Date;
-        delete sighting.Time;
-        sighting.DateTime = newDateTime;
-        return sighting;
-      })
-      // Remove sightings that are in the past
-      .filter(sighting => sighting.DateTime >= now)
-      // Remove sightings that are too low in the sky 
-      .filter(sighting => parseInt(sighting.Maximum_Elevation) >= 40);
+  // Define required scripts.
+  getScripts: function () {
+  },
 
-      let i = 0;
-})();
+  // set update interval
+  start: function () {
+    console.log("Starting up " + this.name);
+    this.updateDom();
+  },
+
+  socketNotificationReceived: function (notification, payload) {
+    if (notification === "ERROR") {
+      this.error = true;
+    }
+    else if (notification !== "DATA_RESULT") {
+      return;
+    } else {
+      this.error = false;
+    }
+
+    this.sightings = payload;
+    this.updateDom(this.config.fadeSpeed);
+  },
+
+  // Update function
+  getDom: function () {
+    var wrapper = document.createElement("div");
+
+    var textWrapper = document.createElement("div");
+    textWrapper.className = "date normal medium";
+    textWrapper.innerHTML = this.config.event;
+    wrapper.appendChild(textWrapper);
+
+    var timeWrapper = document.createElement("div");
+    timeWrapper.className = "time bright xlarge light";
+    timeWrapper.style = "text-align: center;";
+
+    var target = moment(this.config.date).add(1, "day");
+    var now = moment();
+    var timeDiff = target.diff(now);
+
+    // Set days, hours, minutes and seconds
+    var diffDays = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+    var diffHours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var diffMinutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+    var diffSeconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+    labelWrapper = function (text) {
+      var wrapper = document.createElement("sup");
+      wrapper.className = "dimmed";
+      wrapper.innerHTML = text;
+      return wrapper;
+    }
+
+    // Build the output
+    var days = document.createElement("div");
+    var hrs = document.createElement("div");
+    var tMinus = document.createElement("div");
+
+    if (diffDays <= -1) {
+      this.hide();
+      return wrapper;
+    }
+
+    if (diffDays < 0 && diffHours < 24) {
+      days.innerHTML = "TODAY!";
+      timeWrapper.appendChild(days);
+    } else {
+      if (diffDays > 1) {
+        days.innerHTML = diffDays;
+        days.appendChild(labelWrapper(this.config.daysLabel));
+      } else {
+        tMinus.innerHTML += `T-${this.pad(diffHours, 2)}:${this.pad(diffMinutes, 2)}:${this.pad(diffSeconds, 2)}`;
+      }
+    }
+
+    timeWrapper.appendChild(days);
+    timeWrapper.appendChild(hrs);
+    timeWrapper.appendChild(tMinus);
+
+    wrapper.appendChild(timeWrapper);
+
+    return wrapper;
+  },
+
+  pad: function pad(num, size) {
+    num = num.toString();
+    while (num.length < size) num = "0" + num;
+    return num;
+  }
+});

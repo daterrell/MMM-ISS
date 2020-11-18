@@ -17,8 +17,8 @@ module.exports = NodeHelper.create({
     if (this.requestInFlight) return;
 
     var country = (this.config.country).replace(/ /g,"_");
-    var region = (this.config.country).replace(/ /g,"_");
-    var city = (this.config.country).replace(/ /g,"_");
+    var region = (this.config.region).replace(/ /g,"_");
+    var city = (this.config.city).replace(/ /g,"_");
     var self = this;
 
     var parser = new Parser();
@@ -72,7 +72,9 @@ module.exports = NodeHelper.create({
         // Remove sightings that are in the past
         .filter(sighting => sighting.DateTime >= now)
         // Remove sightings that are too low in the sky 
-        .filter(sighting => parseInt(sighting.Maximum_Elevation) >= 40);
+        .filter(sighting => parseInt(sighting.Maximum_Elevation) >= 40)
+        // Ensure we're listed by date
+        .sort((a, b) => a.DateTime - b.DateTime);
 
     return sightings;
   }
