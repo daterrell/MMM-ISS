@@ -40,7 +40,7 @@ Module.register("MMM-ISS", {
     var self = this;
     setInterval(function () {
       self.getInfo();
-    }, 10000);
+    }, 3600000);
   },
 
   getInfo: function () {

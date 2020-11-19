@@ -7,33 +7,33 @@
 
 let NodeHelper = require('node_helper')
 const Parser = require('rss-parser');
-const Log = require("../../js/logger");
 
 module.exports = NodeHelper.create({
   
   requestInFlight: false,
 
-  getData: function (obj) {
+  getData: function (config) {
     if (this.requestInFlight) return;
     this.requestInFlight = true;
 
-    let country = (obj.country).replace(/ /g, "_");
-    let region = (obj.region).replace(/ /g, "_");
-    let city = (obj.city).replace(/ /g, "_");
+    let country = (config.country).replace(/ /g, "_");
+    let region = (config.region).replace(/ /g, "_");
+    let city = (config.city).replace(/ /g, "_");
 
     let parser = new Parser();
     let feedUrl = `https://spotthestation.nasa.gov/sightings/xml_files/${country}_${region}_${city}.xml`;
     
     let self = this;
-    parser.parseURL(feedUrl)
-      .then(feed => {
-        let sightings = self.parseFeed(feed, obj);
-        self.sendSocketNotification('DATA_RESULT', sightings);
-      })
-      .catch(err => {
+    parser.parseURL(feedUrl, (err, feed) => {
+      if (err) {
         self.sendSocketNotification('ERROR', err);
-      })
-      .finally(() => self.requestInFlight = false);
+        return;
+      } 
+
+      let sightings = self.parseFeed(feed, config);
+      self.sendSocketNotification('DATA_RESULT', sightings);
+    })
+    .finally(() => self.requestInFlight = false);
   },
 
   socketNotificationReceived: function (notification, payload) {
@@ -42,7 +42,7 @@ module.exports = NodeHelper.create({
     }
   },
 
-  parseFeed: function (fee, obj) {
+  parseFeed: function (feed, config) {
     let offset = new Date().getTimezoneOffset();
     let plusMinus = offset >= 0 ? '-' : '+';
     let stringOffset = "GMT" + plusMinus + ("0000" + (offset / 60 * 100)).substr(-4, 4);
@@ -69,9 +69,9 @@ module.exports = NodeHelper.create({
               data = data
                 .replace("less than ", "<")
                 .replace(" above ", "")
-                .replace("minute", "min");
+                .replace(/minutes?/, "min");
 
-              rv[e[prop]] = data;
+              rv[prop] = data;
 
               return rv;
             }, {});
@@ -89,6 +89,7 @@ module.exports = NodeHelper.create({
         })
         // Move directions (ex. WNW) out of Approach and Departure properties
         .map(sighting => {
+          console.log(sighting);
           let splitParts = function (item) {
             let parts = item.split("°");
 
@@ -98,12 +99,12 @@ module.exports = NodeHelper.create({
             };
           };
 
-          let app = splitParts(sightings.Approach);
-          sighting.Approach = app.degree;
+          let app = splitParts(sighting.Approach);
+          sighting.Approach = app.degree + "°";
           sighting.Approach_Direction = app.direction;
 
           let dep = splitParts(sighting.Departure);
-          sighting.Departure = dep.degree;
+          sighting.Departure = dep.degree + "°";
           sighting.Departure_Direction = dep.direction;
 
           return sighting;
@@ -111,14 +112,14 @@ module.exports = NodeHelper.create({
         // Remove sightings that are in the past
         .filter(sighting => sighting.DateTime >= now)
         // Remove sightings that are too low in the sky 
-        .filter(sighting => parseInt(sighting.Maximum_Elevation) >= obj.minElevation)
+        .filter(sighting => parseInt(sighting.Maximum_Elevation) >= config.minElevation)
         // Ensure we're listed by date
         .sort((a, b) => a.DateTime - b.DateTime)[0];
 
     return {
       date: sightings.DateTime.toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" }),
       time: sightings.DateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      visible: sighting.Duration,
+      visible: sightings.Duration,
       maxHeight: sightings.Maximum_Elevation,
       appears: sightings.Approach,
       appearsDirection: sightings.Approach_Direction,

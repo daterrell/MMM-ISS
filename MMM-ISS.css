@@ -24,6 +24,7 @@
 
 .MMM-ISS .sightingsIntro {
   text-align: center;
+  line-height: 14px;
 }
 
 .MMM-ISS div.sightingDate {
@@ -51,7 +52,7 @@
 }
 
 .MMM-ISS div.sightingData.well.well-sm {
-  padding: 0 0 10px 0;
+  padding: 0 10px 10px 10px;
 }
 
 .MMM-ISS div.sightingData.well {
