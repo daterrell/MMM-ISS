@@ -1,0 +1,92 @@
+.MMM-ISS * {
+  color: #fff;
+}
+
+.MMM-ISS #content {
+  outline: none;
+}
+
+.MMM-ISS .content {
+  border-left: 0;
+  border-top: 0;
+  font-size: 14px;
+  background: none;
+}
+
+.MMM-ISS div.contentRow {
+  overflow: hidden;
+}
+
+.MMM-ISS #content.content {
+  min-height: auto;
+  padding-top: 5px;
+}
+
+.MMM-ISS .sightingsIntro {
+  text-align: center;
+  line-height: 14px;
+}
+
+.MMM-ISS div.sightingDate {
+  font-size: 24px;
+  line-height: 26px;
+  text-align: center;
+  padding-top: 10px;
+}
+
+.MMM-ISS div.sightingTime {
+  font-size: 30px;
+  line-height: 32px;
+  text-align: center;
+  padding-bottom: 10px;
+  font-weight: bold;
+}
+
+.MMM-ISS .well-sm {
+  border-radius: 3px;
+}
+
+.MMM-ISS .well {
+  min-height: 20px;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.MMM-ISS div.sightingData.well.well-sm {
+  padding: 0 10px 10px 10px;
+}
+
+.MMM-ISS div.sightingData.well {
+  background-color: #333;
+  color: #CCC;
+  border: none;
+  font-size: 18px;
+  line-height: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  column-count: 2;
+  text-align: left;
+}
+
+.MMM-ISS .row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.MMM-ISS div.sightingVisible, .MMM-ISS div.sightingHeight, .MMM-ISS div.sightingAppears, .MMM-ISS div.sightingDisappears {
+  font-size: 30px;
+  padding-top: 5px;
+}
+
+.MMM-ISS div.sightingVisible span, .MMM-ISS div.sightingHeight span, .MMM-ISS div.sightingAppears span, .MMM-ISS div.sightingDisappears span {
+  color: #999;
+  display: block;
+  font-size: 14px;
+  line-height: 14px;
+  font-weight: normal;
+  padding: 10px 0;
+}
+
+.MMM-ISS div.sightingVisible small, .MMM-ISS div.sightingHeight small, .MMM-ISS div.sightingAppears small, .MMM-ISS div.sightingDisappears small {
+  font-size: 18px;
+  font-weight: normal;
+}
