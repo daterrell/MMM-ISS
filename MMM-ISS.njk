@@ -1,0 +1,39 @@
+<div class="MMM-ISS container-fluid">
+  <div class="row contentRow">
+    <div class="content" id="content" tabindex="-1">
+      <div class="sightingsIntro">
+        Next ISS Fly-Over:
+      </div>
+      <div class="sightingDate">
+        {{ date }}
+      </div>
+      <div class="sightingTime">
+        {{ time }}
+      </div>
+      <div class="sightingData well well-sm">
+        <div class="row">
+          <div class="sightingVisible col">
+            <span>Visible</span>
+            {{ visible }}
+          </div>
+          <div class="sightingHeight col">
+            <span>Max Height</span>
+            {{ maxHeight }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="sightingAppears col">
+            <span>Appears</span>
+            {{ appears }}
+            <small>{{ appearsDirection }}</small>
+          </div>
+          <div class="sightingDisappears col">
+            <span>Disappears</span>
+            {{ disappears }}
+            <small>{{ disappearsDirection }}</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
