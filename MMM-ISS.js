@@ -6,7 +6,7 @@
  */
 
 Module.register("MMM-ISS", {
-  sightings: {},
+  sightings: null,
   error: false,
 
   defaults: {
@@ -20,24 +20,17 @@ Module.register("MMM-ISS", {
   },
 
   getStyles: function () {
-    return ["MMM-ISS.css", "bootstrap.min.css"];
+    return ["MMM-ISS.css"];
   },
 
   getTemplate: function () {
-    return "MMM-ISS.njk"
+    if (this.sightings)
+      return "MMM-ISS.njk"
   },
 
   getTemplateData: function () {
-    return this.sightings;
-  },
-
-  /**
-   * A sample item content:
-   * Date: Thursday Nov 19, 2020 <br/> Time: 7:12 PM <br/> Duration: less than 1 minute <br/> Maximum Elevation: 10° <br/> Approach: 10° above WNW <br/> Departure: 10° above WNW <br/> 
-   */
-
-  getHeader: function () {
-    return false;
+    if (this.sightings)
+      return this.sightings;
   },
 
   start: function () {
@@ -47,7 +40,7 @@ Module.register("MMM-ISS", {
     var self = this;
     setInterval(function () {
       self.getInfo();
-    }, 3600000);
+    }, 10000);
   },
 
   getInfo: function () {
@@ -56,7 +49,10 @@ Module.register("MMM-ISS", {
   },
 
   socketNotificationReceived: function (notification, payload) {
-    if (notification === "DATA_RESULT") {
+    if (!payload || notification === "ERROR") {
+      this.sightings = null;
+      this.hide();
+    } else if (notification === "DATA_RESULT") {
       this.sightings = payload;
       this.updateDom(this.config.fadeSpeed);
     }
