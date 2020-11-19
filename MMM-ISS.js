@@ -42,7 +42,17 @@ Module.register("MMM-ISS", {
 
   start: function () {
     console.log("Starting up " + this.name);
-    this.updateDom();
+    this.getInfo();
+
+    var self = this;
+    setInterval(function () {
+      self.getInfo();
+    }, 3600000);
+  },
+
+  getInfo: function () {
+    console.log(this.name + "[MAIN MODULE]: getInfo()");
+    this.sendSocketNotification("GET_DATA", this.config);
   },
 
   socketNotificationReceived: function (notification, payload) {

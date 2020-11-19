@@ -10,23 +10,24 @@ const Parser = require('rss-parser');
 const Log = require("../../js/logger");
 
 module.exports = NodeHelper.create({
-  feedUrl: template`https://spotthestation.nasa.gov/sightings/xml_files/${0}_${1}_${2}.xml`,
+  
   requestInFlight: false,
 
-  getData: function () {
+  getData: function (obj) {
     if (this.requestInFlight) return;
-
-    let country = (this.config.country).replace(/ /g, "_");
-    let region = (this.config.region).replace(/ /g, "_");
-    let city = (this.config.city).replace(/ /g, "_");
-    let self = this;
-
-    let parser = new Parser();
     this.requestInFlight = true;
 
-    parser.parseURL(feedUrl(country, region, city))
+    let country = (obj.country).replace(/ /g, "_");
+    let region = (obj.region).replace(/ /g, "_");
+    let city = (obj.city).replace(/ /g, "_");
+
+    let parser = new Parser();
+    let feedUrl = `https://spotthestation.nasa.gov/sightings/xml_files/${country}_${region}_${city}.xml`;
+    
+    let self = this;
+    parser.parseURL(feedUrl)
       .then(feed => {
-        let sightings = self.parseFeed(feed);
+        let sightings = self.parseFeed(feed, obj);
         self.sendSocketNotification('DATA_RESULT', sightings);
       })
       .catch(err => {
@@ -37,11 +38,11 @@ module.exports = NodeHelper.create({
 
   socketNotificationReceived: function (notification, payload) {
     if (notification === 'GET_DATA') {
-      this.getData()
+      this.getData(payload)
     }
   },
 
-  parseFeed: function (feed) {
+  parseFeed: function (fee, obj) {
     let offset = new Date().getTimezoneOffset();
     let plusMinus = offset >= 0 ? '-' : '+';
     let stringOffset = "GMT" + plusMinus + ("0000" + (offset / 60 * 100)).substr(-4, 4);
@@ -110,7 +111,7 @@ module.exports = NodeHelper.create({
         // Remove sightings that are in the past
         .filter(sighting => sighting.DateTime >= now)
         // Remove sightings that are too low in the sky 
-        .filter(sighting => parseInt(sighting.Maximum_Elevation) >= this.config.minElevation)
+        .filter(sighting => parseInt(sighting.Maximum_Elevation) >= obj.minElevation)
         // Ensure we're listed by date
         .sort((a, b) => a.DateTime - b.DateTime)[0];
 
