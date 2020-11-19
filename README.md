@@ -2,7 +2,7 @@
 
 This modules for the [Magic Mirror²](https://github.com/MichMich/MagicMirror) will show a card when there's an ISS flyover with a good possibility of viewing.
 
-![The Module](.gihub/ISS-SS.png)
+![The Module](.github/ISS-SS.png)
 
 **This is v1.0** -- and, as the module does what I want, won't likely change much. 
 
@@ -22,7 +22,7 @@ So, here we are.
   cd MMM-ISS
   npm install
   ```
-1. Add the module to your `config/config.js` file.
+2. Add the module to your `config/config.js` file.
   ```js
   {
     module: 'MMM-ISS',
