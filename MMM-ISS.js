@@ -24,13 +24,11 @@ Module.register("MMM-ISS", {
   },
 
   getTemplate: function () {
-    if (this.sightings)
-      return "MMM-ISS.njk"
+    return "MMM-ISS.njk"
   },
 
   getTemplateData: function () {
-    if (this.sightings)
-      return this.sightings;
+    return this.sightings;
   },
 
   start: function () {
@@ -49,7 +47,9 @@ Module.register("MMM-ISS", {
   },
 
   socketNotificationReceived: function (notification, payload) {
-    if (!payload || notification === "ERROR") {
+    if (!payload || 
+        notification === "ERROR" ||
+        Object.keys(payload).length <= 0) {
       this.sightings = null;
       this.hide();
     } else if (notification === "DATA_RESULT") {
