@@ -27,13 +27,13 @@ module.exports = NodeHelper.create({
     parser.parseURL(feedUrl, (err, feed) => {
       if (err) {
         self.sendSocketNotification('ERROR', err);
-        return;
-      } 
-
-      let sightings = self.parseFeed(feed, config);
-      self.sendSocketNotification('DATA_RESULT', sightings);
-    })
-    .finally(() => self.requestInFlight = false);
+      } else {
+        let sightings = self.parseFeed(feed, config);
+        self.sendSocketNotification('DATA_RESULT', sightings);
+      }
+      
+      self.requestInFlight = false;
+    });
   },
 
   socketNotificationReceived: function (notification, payload) {
