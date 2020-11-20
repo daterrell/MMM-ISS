@@ -8,6 +8,7 @@
 Module.register("MMM-ISS", {
   sightings: null,
   error: false,
+  count: 1,
 
   defaults: {
     /**
@@ -38,7 +39,7 @@ Module.register("MMM-ISS", {
     var self = this;
     setInterval(function () {
       self.getInfo();
-    }, 3600000);
+    }, 300000);
   },
 
   getInfo: function () {

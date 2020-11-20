@@ -89,7 +89,6 @@ module.exports = NodeHelper.create({
         })
         // Move directions (ex. WNW) out of Approach and Departure properties
         .map(sighting => {
-          console.log(sighting);
           let splitParts = function (item) {
             let parts = item.split("°");
 
