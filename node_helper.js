@@ -114,6 +114,9 @@ module.exports = NodeHelper.create({
         .filter(sighting => parseInt(sighting.Maximum_Elevation) >= config.minElevation)
         // Ensure we're listed by date
         .sort((a, b) => a.DateTime - b.DateTime)[0];
+    
+    
+    if (!sightings || Object.keys(sightings).length <= 0) return {};
 
     return {
       date: sightings.DateTime.toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" }),
