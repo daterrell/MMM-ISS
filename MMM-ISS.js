@@ -54,6 +54,7 @@ Module.register("MMM-ISS", {
       this.sightings = null;
       this.hide();
     } else if (notification === "DATA_RESULT") {
+      this.show();
       this.sightings = payload;
       this.updateDom(this.config.fadeSpeed);
     }
