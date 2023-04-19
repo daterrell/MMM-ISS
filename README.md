@@ -13,6 +13,7 @@ widget look compared to the aesthetics of the rest of my mirror.  Plus, the APIs
 So, here we are.
 
 NB: The `minElevation` property will filter out any sighting whose `Max Elevation` is below your `minElevation` value; the default is 40 degrees.
+When there are no sightings, the panel is hidden.  I find this useful because MM is generally quite static.  Having the panel shown only when there are viewable sightings draws attention when it is present.
 
 ## How?
 ### Manual install
