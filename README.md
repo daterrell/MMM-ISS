@@ -12,6 +12,8 @@ widget look compared to the aesthetics of the rest of my mirror.  Plus, the APIs
 
 So, here we are.
 
+NB: The `minElevation` property will filter out any sighting whose `Max Elevation` is below your `minElevation` value; the default is 40 degrees.
+
 ## How?
 ### Manual install
 
@@ -31,7 +33,8 @@ So, here we are.
       // These values must come from available locations on the SpotTheStation site: https://spotthestation.nasa.gov/
       country: "United States",
       region: "Massachusetts",
-      city: "Boston"
+      city: "Boston",
+      minElevation: 40 // Lowest elevation for the panel to show up
     }
   },
   ```
