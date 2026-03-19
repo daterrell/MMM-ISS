@@ -44,8 +44,8 @@ module.exports = NodeHelper.create({
       return;
     }
 
-    let lat = config.lat || 52.36;
-    let lng = config.lng || 5.19;
+    let lat = config.lat || 0;
+    let lng = config.lng || 0;
     let alt = config.alt || 0;
     let days = config.days || 10;
     let minElevation = parseInt(config.minElevation) || 40;
