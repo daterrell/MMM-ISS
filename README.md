@@ -1,41 +1,58 @@
-# Magic Mirror Module: ISS Fly-Overs
+# MMM-ISS
 
-This modules for the [Magic Mirror²](https://github.com/MichMich/MagicMirror) will show a card when there's an ISS flyover with a good possibility of viewing.
+A [MagicMirror²](https://github.com/MichMich/MagicMirror) module that displays the next visible pass of the International Space Station (ISS) overhead.
 
-![The Module](.github/ISS-SS.png)
+> **Note:** This module previously used NASA's SpotTheStation service, which was shut down on June 12, 2025. It now uses the [N2YO API](https://www.n2yo.com/api/) instead. A free API key is required.
 
-**This is v1.0** -- and, as the module does what I want, won't likely change much. 
+## Screenshot
 
-## Why?
-Why another ISS module when mykle1 [has already created one](https://github.com/mykle1/MMM-ISS) that works fine?  Well, personal preference.  I didn't like the NASA
-widget look compared to the aesthetics of the rest of my mirror.  Plus, the APIs mykle1 is using (or rather, [the APIs that the APIs are using](https://github.com/open-notify/Open-Notify-API)) are slated to be shut down (see the first output line of [the old spaceflight](https://spaceflight.nasa.gov/realdata/sightings/SSapplications/Post/JavaSSOP/orbit/ISS/SVPOST.html) page).
+![MMM-ISS Screenshot](screenshot.png)
 
-So, here we are.
+## Installation
 
-NB: The `minElevation` property will filter out any sighting whose `Max Elevation` is below your `minElevation` value; the default is 40 degrees.
-When there are no sightings, the panel is hidden.  I find this useful because MM is generally quite static.  Having the panel shown only when there are viewable sightings draws attention when it is present.
+```bash
+cd ~/MagicMirror/modules
+git clone https://github.com/daterrell/MMM-ISS
+cd MMM-ISS
+npm install
+```
 
-## How?
-### Manual install
+## N2YO API Key
 
-1. Clone this repository in your `modules` folder, and install dependencies:
-  ```bash
-  cd ~/MagicMirror/modules # adapt directory if you are using a different one
-  git clone https://github.com/daterrell/MMM-ISS.git
-  cd MMM-ISS
-  npm install
-  ```
-2. Add the module to your `config/config.js` file.
-  ```js
-  {
-    module: 'MMM-ISS',
-    position: 'bottom_center',
-    config: {
-      // These values must come from available locations on the SpotTheStation site: https://spotthestation.nasa.gov/
-      country: "United States",
-      region: "Massachusetts",
-      city: "Boston",
-      minElevation: 40 // Lowest elevation for the panel to show up
-    }
-  },
-  ```
+1. Register for a free account at [n2yo.com](https://www.n2yo.com/login/register/)
+2. Your API key will be shown on your [account page](https://www.n2yo.com/login/)
+3. The free tier allows up to 1,000 requests per hour, which is more than enough for this module
+
+## Configuration
+
+Add the following to your `config.js`:
+
+```javascript
+{
+  module: "MMM-ISS",
+  position: "bottom_right",
+  config: {
+    apiKey: "YOUR_N2YO_API_KEY",  // Required – get yours at n2yo.com
+    lat: 37.77,                    // Your latitude
+    lng: -122.41,                  // Your longitude
+    alt: 0,                        // Your altitude in meters (optional, default: 0)
+    days: 10,                      // How many days ahead to search (optional, default: 10)
+    minElevation: 40               // Minimum elevation in degrees (optional, default: 40)
+  }
+},
+```
+
+### Configuration Options
+
+| Option | Description | Default |
+|---|---|---|
+| `apiKey` | **Required.** Your N2YO API key | — |
+| `lat` | Your latitude | `0` |
+| `lng` | Your longitude | `0` |
+| `alt` | Your altitude in meters | `0` |
+| `days` | Number of days ahead to search for passes | `10` |
+| `minElevation` | Minimum pass elevation in degrees (0–90). Higher values show only more visible passes | `40` |
+
+## License
+
+MIT — By Dave Terrell
