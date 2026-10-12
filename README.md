@@ -6,7 +6,7 @@ A [MagicMirror²](https://github.com/MichMich/MagicMirror) module that displays 
 
 ## Screenshot
 
-![MMM-ISS Screenshot](screenshot.png)
+![MMM-ISS Screenshot](.github/ISS-SS.png)
 
 ## Installation
 
